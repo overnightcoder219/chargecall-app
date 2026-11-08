@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="dark">
+  <meta name="darkreader-lock">
+  <meta name="theme-color" content="#0b1511">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChargeCall</title>
+  <meta name="description" content="Peringatan baterai bersuara untuk Android, tanpa iklan: aturan otomatis dengan suara AI, rekaman sendiri, atau nada; kesehatan baterai, riwayat, widget. Tanpa internet.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="icon" href="logo.png" type="image/png">
+  <style>
+    /* Halaman sengaja gelap (seperti aplikasinya); deklarasi ini mencegah mode gelap paksa browser mewarnai ulang. */
+    :root {
+      color-scheme: dark;
+      /* dari ikon: hijau tua, hijau mint, oranye */
+      --bg: #0b1511; --surface: #121e19; --surface-2: #17261f; --line: #22352c;
+      --text: #e9f2ec; --muted: #94a89c; --accent: #22a06b; --accent-2: #3ddc97; --accent-3: #ffc46b;
+      --accent-ink: #06130d; --warn: #ffc46b;
+      --grad: linear-gradient(120deg, var(--accent) 0%, var(--accent-2) 60%, var(--accent-3) 100%);
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: radial-gradient(900px 520px at 85% -120px, rgba(61,220,151,.16), transparent 70%), radial-gradient(700px 460px at -10% 180px, rgba(255,196,107,.08), transparent 70%), var(--bg); background-repeat: no-repeat; color: var(--text); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    a { color: var(--accent-2); }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+    header.top { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .3px; }
+    .brand img { width: 34px; height: 34px; border-radius: 9px; }
+    .lang button { background: none; border: 1px solid var(--line); color: var(--muted); padding: 4px 10px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 13px; }
+    .lang button[aria-pressed="true"] { color: var(--text); border-color: var(--accent); }
+    .hero { padding: 36px 0 28px; }
+    .hero .mark { width: 88px; height: 88px; border-radius: 22px; box-shadow: 0 14px 40px rgba(34,160,107,.4); margin-bottom: 20px; }
+    .grad-text { color: var(--accent-2); }
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+      .grad-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    }
+    .hero h1 { font-size: clamp(28px, 6vw, 44px); line-height: 1.15; margin: 0 0 12px; }
+    .hero p { color: var(--muted); font-size: 18px; margin: 0 0 24px; max-width: 680px; }
+    .cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .btn { display: inline-block; background: var(--grad); color: var(--accent-ink); font-weight: 700; text-decoration: none; padding: 14px 22px; border-radius: 12px; box-shadow: 0 8px 24px rgba(34,160,107,.25); transition: transform .15s, box-shadow .15s; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 30px rgba(34,160,107,.35); }
+    .btn.ghost { background: rgba(255,255,255,.02); color: var(--text); border: 1px solid var(--line); font-weight: 600; box-shadow: none; }
+    .btn.ghost:hover { border-color: var(--accent); }
+    .meta { color: var(--muted); font-size: 13px; margin-top: 14px; word-break: break-all; }
+    .meta code { color: var(--text); }
+    /* tangkapan layar HP: potret, tiga berdampingan */
+    .strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 28px; }
+    .strip a { display: block; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(0,0,0,.45); background: var(--surface); }
+    .strip img { display: block; width: 100%; height: auto; }
+    @media (max-width: 560px) { .strip { grid-template-columns: repeat(3, 1fr); gap: 8px; } }
+    section { padding: 28px 0; border-top: 1px solid var(--line); }
+    h2 { font-size: 22px; margin: 0 0 16px; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+    .gallery figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+    .gallery a { display: block; }
+    .gallery img { display: block; width: 100%; height: auto; transition: transform .2s; }
+    .gallery a:hover img { transform: scale(1.02); }
+    .gallery figcaption { padding: 10px 14px 12px; font-size: 14px; color: var(--muted); }
+    .gallery figcaption b { display: block; color: var(--text); font-size: 15px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .card { background: linear-gradient(180deg, var(--surface-2), var(--surface)); border: 1px solid var(--line); border-radius: 14px; padding: 16px; position: relative; overflow: hidden; transition: border-color .15s; }
+    .card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 2px; background: var(--grad); opacity: .8; }
+    .card:hover { border-color: #2f4a3c; }
+    .card h3 { margin: 0 0 6px; font-size: 16px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+    ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: step; display: grid; gap: 10px; }
+    ol.steps li { counter-increment: step; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 14px 56px; position: relative; }
+    ol.steps li::before { content: counter(step); position: absolute; left: 16px; top: 14px; width: 28px; height: 28px; border-radius: 50%; background: var(--grad); color: var(--accent-ink); font-weight: 700; display: grid; place-items: center; font-size: 14px; }
+    ol.steps b { display: block; }
+    ol.steps span { color: var(--muted); font-size: 14px; }
+    .tag { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 999px; margin-left: 6px; vertical-align: 2px; border: 1px solid var(--line); color: var(--muted); }
+    .tag.req { border-color: var(--accent); color: var(--accent-2); }
+    details.group { background: none; border: 0; padding: 0; margin: 0 0 6px; }
+    details.group > summary { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 12px 28px 12px 0; border-bottom: 1px solid var(--line); }
+    details.group[open] > summary { color: var(--accent-2); margin-bottom: 10px; }
+    details.group > summary::after { top: 15px; }
+    details.group[open] > summary::after { top: 19px; border-color: var(--accent); }
+    details.group .count { color: var(--muted); font-weight: 400; letter-spacing: 0; text-transform: none; margin-left: 6px; }
+    details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 0 16px; margin-bottom: 8px; }
+    details[open] { border-color: var(--accent); }
+    summary { cursor: pointer; font-weight: 600; padding: 13px 28px 13px 0; list-style: none; position: relative; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: ""; position: absolute; right: 4px; top: 18px; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .15s; }
+    details[open] > summary::after { transform: rotate(-135deg); top: 22px; }
+    details p { color: var(--muted); margin: 0 0 14px; font-size: 15px; line-height: 1.55; }
+    details p + p { margin-top: -6px; }
+    .contact { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-top: 18px; }
+    .contact p { margin: 0; color: var(--muted); font-size: 15px; }
+    .contact a.mail { display: inline-block; background: var(--grad); color: var(--accent-ink); font-weight: 600; text-decoration: none; padding: 10px 16px; border-radius: 10px; }
+    .support { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--accent); border-radius: 14px; padding: 18px; }
+    .support p { margin: 0; color: var(--muted); font-size: 15px; max-width: 600px; }
+    .support p b { color: var(--text); }
+    .note { border-left: 3px solid var(--warn); padding: 8px 14px; background: var(--surface); border-radius: 0 10px 10px 0; color: var(--muted); font-size: 14px; margin-top: 18px; }
+    footer { color: var(--muted); font-size: 13px; padding: 28px 0 40px; border-top: 1px solid var(--line); }
+    .to-top { position: fixed; right: 16px; bottom: 20px; width: 46px; height: 46px; border-radius: 50%; border: 0; background: var(--grad); color: var(--accent-ink); font-weight: 700; font-size: 20px; line-height: 1; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,.35); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .2s, transform .2s; }
+    .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
+    .viewer { position: fixed; inset: 0; background: rgba(4,10,7,.92); display: grid; place-items: center; padding: 16px; z-index: 10; }
+    .viewer img { max-width: 100%; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+    [hidden] { display: none !important; }
+    [data-en] { display: none; }
+    html[lang="en"] [data-id] { display: none; }
+    html[lang="en"] [data-en] { display: revert; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><img src="logo.svg" alt=""> ChargeCall</div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-set-lang="id" aria-pressed="true">ID</button>
+      <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <img class="mark" src="logo.svg" alt="">
+    <h1 data-id>Peringatan baterai yang <span class="grad-text">bicara</span>, tanpa iklan</h1>
+    <h1 data-en>Battery alerts that <span class="grad-text">talk</span>, without ads</h1>
+    <p data-id>Buat aturan seperti di Automation iPhone: "kalau baterai 20%, bilang <i>cari charger</i>", "ingatkan tiap 5 menit untuk mencabut di 80%", "kalau dicas semalaman, bangunkan". Suaranya bisa dari suara AI, rekaman kamu sendiri, lagu, atau nada dering. Plus kesehatan baterai, riwayat, dan widget. Tanpa internet.</p>
+    <p data-en>Build rules like iPhone Automations: "at 20%, say <i>find a charger</i>", "remind me every 5 minutes to unplug at 80%", "if it charges all night, wake me". The voice can be the AI voice, your own recording, a song or a ringtone. Plus battery health, history and a widget. No internet.</p>
+    <div class="cta">
+      <a class="btn" href="https://github.com/Sammy219/chargecall-app/releases/download/v1.6.1/ChargeCall-1.6.1.apk">
+        <span data-id>Unduh APK 1.6.1</span><span data-en>Download APK 1.6.1</span>
+      </a>
+      <a class="btn ghost" href="https://github.com/Sammy219/chargecall-app/releases">
+        <span data-id>Semua rilis</span><span data-en>All releases</span>
+      </a>
+      <a class="btn ghost" href="#setup">
+        <span data-id>Cara setup</span><span data-en>How to set up</span>
+      </a>
+    </div>
+    <div class="meta">Android 10+ · <span data-id>tanpa izin internet</span><span data-en>no internet permission</span> · SHA-256 <code>39e365815c886c61d02ed9a816daf3e3527e687136e31bc906315089a2754220</code></div>
+    <div class="strip">
+      <a href="screenshots/beranda.jpg" data-view><img src="screenshots/beranda.jpg" width="720" height="1600" alt="Beranda: level baterai, kesehatan baterai, aturan"></a>
+      <a href="screenshots/otomasi.jpg" data-view><img src="screenshots/otomasi.jpg" width="720" height="1600" alt="Otomasi: profil dan daftar aturan"></a>
+      <a href="screenshots/aturan.jpg" data-view><img src="screenshots/aturan.jpg" width="720" height="1600" alt="Editor aturan: JIKA, MAKA PUTAR"></a>
+    </div>
+  </div>
+
+  <section>
+    <h2 data-id>Tangkapan layar</h2><h2 data-en>Screenshots</h2>
+    <div class="gallery">
+      <figure><a href="screenshots/beranda.jpg" data-view><img src="screenshots/beranda.jpg" loading="lazy" alt="Beranda"></a>
+        <figcaption><b><span data-id>Baterai</span><span data-en>Battery</span></b><span data-id>Level, perkiraan waktu, Diamkan 1 jam, kesehatan baterai, lalu riwayat di bawahnya.</span><span data-en>Level, time estimate, Mute 1 hour, battery health, with history below.</span></figcaption></figure>
+      <figure><a href="screenshots/otomasi.jpg" data-view><img src="screenshots/otomasi.jpg" loading="lazy" alt="Otomasi"></a>
+        <figcaption><b><span data-id>Otomasi</span><span data-en>Automations</span></b><span data-id>Profil (Umum, Rumah, Kantor, Tidur) dan daftar aturan dengan tombol Tes dan sakelar.</span><span data-en>Profiles (General, Home, Work, Sleep) and the rule list with Test buttons and switches.</span></figcaption></figure>
+      <figure><a href="screenshots/aturan.jpg" data-view><img src="screenshots/aturan.jpg" loading="lazy" alt="Editor aturan"></a>
+        <figcaption><b><span data-id>Aturan</span><span data-en>Rule</span></b><span data-id>JIKA kondisi baterai, MAKA putar suara: kalimat AI dengan variabel, nada dan kecepatan bicara.</span><span data-en>IF a battery condition, THEN play a sound: AI phrases with variables, pitch and speech rate.</span></figcaption></figure>
+      <figure><a href="screenshots/kondisi.jpg" data-view><img src="screenshots/kondisi.jpg" loading="lazy" alt="Opsi dan kondisi tambahan"></a>
+        <figcaption><b><span data-id>Opsi &amp; kondisi</span><span data-en>Options &amp; conditions</span></b><span data-id>Ulang, loop, getar, diam saat HP dipakai; batasi ke jam, hari, jenis charger, atau profil.</span><span data-en>Repeat, loop, vibrate, silent while in use; limit to hours, days, charger type or profile.</span></figcaption></figure>
+      <figure><a href="screenshots/riwayat.jpg" data-view><img src="screenshots/riwayat.jpg" loading="lazy" alt="Riwayat dan grafik"></a>
+        <figcaption><b><span data-id>Riwayat</span><span data-en>History</span></b><span data-id>Grafik level 24 jam / 7 hari, sesi pengisian, dan tren kesehatan baterai.</span><span data-en>24 h / 7 day level chart, charging sessions and the battery health trend.</span></figcaption></figure>
+      <figure><a href="screenshots/lebar.jpg" data-view><img src="screenshots/lebar.jpg" loading="lazy" alt="Layar lebar: rail menu samping"></a>
+        <figcaption><b><span data-id>Layar lebar</span><span data-en>Wide screens</span></b><span data-id>Di tablet atau HP lanskap, menu pindah ke rail samping yang bisa diciutkan dengan ☰.</span><span data-en>On tablets or landscape phones the menu moves to a side rail that collapses with ☰.</span></figcaption></figure>
+      <figure><a href="screenshots/peringatan.jpg" data-view><img src="screenshots/peringatan.jpg" loading="lazy" alt="Peringatan setup belum selesai"></a>
+        <figcaption><b><span data-id>Peringatan setup</span><span data-en>Setup reminder</span></b><span data-id>Muncul saat membuka tab lain selagi ada langkah wajib yang belum selesai; tab Setup bertanda •.</span><span data-en>Shown when opening another tab while a required step is unfinished; the Setup tab shows a •.</span></figcaption></figure>
+      <figure><a href="screenshots/setup.jpg" data-view><img src="screenshots/setup.jpg" loading="lazy" alt="Panduan setup"></a>
+        <figcaption><b>Setup</b><span data-id>Setiap langkah diperiksa langsung: izin, optimasi baterai, Autostart Xiaomi, suara TTS.</span><span data-en>Every step is checked live: permissions, battery optimisation, Xiaomi Autostart, TTS voice.</span></figcaption></figure>
+      <figure><a href="screenshots/tile.jpg" data-view><img src="screenshots/tile.jpg" loading="lazy" alt="Tile Quick Settings"></a>
+        <figcaption><b><span data-id>Tile Quick Settings</span><span data-en>Quick Settings tiles</span></b><span data-id>"Battery monitor" untuk menyalakan pemantauan dan "Mute ChargeCall" untuk diam 1 jam. Ada juga widget layar utama.</span><span data-en>"Battery monitor" toggles monitoring and "Mute ChargeCall" silences alerts for an hour. There is a home-screen widget too.</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2 data-id>Fitur</h2><h2 data-en>Features</h2>
+    <div class="grid">
+      <div class="card">
+        <h3 data-id>12 jenis pemicu</h3><h3 data-en>12 trigger types</h3>
+        <p data-id>Baterai turun ke X%, naik ke X% saat dicas, penuh, charger dicolok/dicabut, suhu, cas lambat, suhu naik cepat, baterai tidak bertambah, cas semalaman, kesehatan baterai turun, siklus pengisian.</p>
+        <p data-en>Drops to X%, reaches X% while charging, full, charger connected/disconnected, temperature, slow charging, fast temperature rise, not increasing, overnight charging, health dropping, charge cycles.</p>
+      </div>
+      <div class="card">
+        <h3 data-id>Suara apa saja</h3><h3 data-en>Any sound</h3>
+        <p data-id>Suara AI (teks ke suara di perangkat) dengan variabel {level}, {suhu}, {sisa_waktu}, {kesehatan}; rekaman suara sendiri; file audio; nada dering; atau getar saja. Atur volume, nada, kecepatan, ulang, loop.</p>
+        <p data-en>AI voice (on-device text-to-speech) with {level}, {temp}, {time_left}, {health}; your own recording; an audio file; a ringtone; or vibrate only. Volume, pitch, rate, repeat and loop.</p>
+      </div>
+      <div class="card">
+        <h3 data-id>Kondisi &amp; profil</h3><h3 data-en>Conditions &amp; profiles</h3>
+        <p data-id>Batasi aturan ke jam, hari, dan jenis charger tertentu. Profil (Rumah, Kantor, Tidur…) mengganti satu set aturan dengan satu ketukan.</p>
+        <p data-en>Limit a rule to certain hours, days and charger types. Profiles (Home, Work, Sleep…) switch whole sets of rules with one tap.</p>
+      </div>
+      <div class="card">
+        <h3 data-id>Tahu kapan harus diam</h3><h3 data-en>Knows when to be quiet</h3>
+        <p data-id>Diam saat HP sedang dipakai (cukup notifikasi), jam tenang, Diamkan 1 jam dari widget atau tile, dan tombol Hentikan suara di notifikasi. Loop berhenti sendiri saat kondisinya lepas.</p>
+        <p data-en>Silent while the phone is in use (notification only), quiet hours, Mute 1 hour from the widget or tile, and a Stop sound button in the notification. Loops stop by themselves when the condition ends.</p>
+      </div>
+      <div class="card">
+        <h3 data-id>Kesehatan &amp; riwayat baterai</h3><h3 data-en>Battery health &amp; history</h3>
+        <p data-id>Kapasitas penuh saat ini vs desain, siklus, status, tegangan; dengan Shizuku memakai kapasitas yang dipelajari Android. Grafik level, sesi pengisian, tren kesehatan, dan perkiraan "penuh dalam…".</p>
+        <p data-en>Current full capacity vs design, cycles, status, voltage; with Shizuku it uses the capacity Android learned. Level chart, charging sessions, health trend and "full in…" estimates.</p>
+      </div>
+      <div class="card">
+        <h3 data-id>Tanpa iklan, tanpa internet, ringan</h3><h3 data-en>No ads, no internet, light</h3>
+        <p data-id>Tidak punya izin internet; semua data di perangkat dan bisa dicadangkan ke file .zip. Layanan latar memakai sekitar 12 MB memori; mesin suara hanya hidup saat bicara.</p>
+        <p data-en>No internet permission; all data stays on the device and can be backed up to a .zip. The background service uses about 12 MB; the speech engine only runs while speaking.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="setup">
+    <h2 data-id>Pengaturan awal</h2><h2 data-en>First-time setup</h2>
+    <p data-id>Halaman <b>Setup</b> terbuka sendiri saat ada langkah wajib yang belum selesai dan memeriksa setiap langkah. Tanpa ini, HyperOS bisa menghentikan peringatan saat layar mati.</p>
+    <p data-en>The <b>Setup</b> page opens by itself while a required step is missing and checks every step. Without them, HyperOS may stop alerts while the screen is off.</p>
+    <ol class="steps">
+      <li><b><span data-id>Pasang APK</span><span data-en>Install the APK</span></b>
+        <span data-id>Unduh di HP dan izinkan pemasangan dari browser. Kalau Play Protect bertanya, pilih "Install anyway".</span>
+        <span data-en>Download on the phone and allow installs from the browser. If Play Protect asks, choose "Install anyway".</span></li>
+      <li><b><span data-id>Izin notifikasi</span><span data-en>Notification permission</span><span class="tag req" data-id>wajib</span><span class="tag req" data-en>required</span></b>
+        <span data-id>Supaya pemantauan berjalan di latar dan tombol "Hentikan suara" muncul.</span>
+        <span data-en>So monitoring runs in the background and the "Stop sound" button appears.</span></li>
+      <li><b><span data-id>Tanpa optimasi baterai</span><span data-en>No battery optimisation</span><span class="tag req" data-id>wajib</span><span class="tag req" data-en>required</span></b>
+        <span data-id>Satu ketuk di Setup, lalu Izinkan.</span>
+        <span data-en>One tap in Setup, then Allow.</span></li>
+      <li><b><span data-id>Xiaomi/HyperOS: Autostart &amp; Penghemat baterai</span><span data-en>Xiaomi/HyperOS: Autostart &amp; Battery saver</span><span class="tag req" data-id>wajib</span><span class="tag req" data-en>required</span></b>
+        <span data-id>Nyalakan Autostart untuk ChargeCall dan pilih "Tanpa batasan" di Penghemat baterai; Setup membuka halaman yang tepat.</span>
+        <span data-en>Turn on Autostart for ChargeCall and choose "No restrictions" in Battery saver; Setup opens the right pages.</span></li>
+      <li><b><span data-id>Suara AI</span><span data-en>AI voice</span><span class="tag" data-id>disarankan</span><span data-en class="tag">recommended</span></b>
+        <span data-id>Setup memeriksa apakah mesin teks-ke-suara punya suara untuk bahasa HP; kalau belum, ada tombol Unduh suara.</span>
+        <span data-en>Setup checks that the text-to-speech engine has a voice for the phone's language; if not, there is a Download voice button.</span></li>
+      <li><b>Shizuku<span class="tag" data-id>opsional</span><span class="tag" data-en>optional</span></b>
+        <span data-id>Hanya untuk kesehatan baterai yang akurat (kapasitas yang dipelajari Android) dan cek otomatis pengaturan HyperOS. Semua peringatan jalan tanpa Shizuku.</span>
+        <span data-en>Only for accurate battery health (Android's learned capacity) and automatic checks of HyperOS settings. Every alert works without Shizuku.</span></li>
+    </ol>
+  </section>
+
+  <section id="support">
+    <h2 data-id>Dukung ChargeCall</h2><h2 data-en>Support ChargeCall</h2>
+    <div class="support">
+      <p data-id><b>ChargeCall gratis dan tanpa iklan.</b><br>Kalau aplikasi ini berguna, kamu bisa traktir kopi lewat Saweria untuk membantu pengembangan berikutnya.</p>
+      <p data-en><b>ChargeCall is free and has no ads.</b><br>If it helps you, you can buy me a coffee on Saweria to support what comes next.</p>
+      <a class="btn" href="https://saweria.co/HelloWorld009" target="_blank" rel="noopener">
+        <span data-id>Dukung via Saweria</span><span data-en>Support on Saweria</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details class="group" open>
+      <summary><span data-id>Umum</span><span data-en>General</span><span class="count">· 4</span></summary>
+      <details>
+        <summary><span data-id>Apa bedanya dengan aplikasi battery alarm di Play Store?</span><span data-en>How is it different from battery alarm apps on the Play Store?</span></summary>
+        <p data-id>Tanpa iklan dan tanpa izin internet. Peringatannya berupa aturan yang bisa disusun bebas (kondisi, suara, kapan boleh bunyi), bukan sekadar satu alarm di satu persen.</p>
+        <p data-en>No ads and no internet permission. Alerts are freely composed rules (condition, sound, when it may sound), not a single alarm at one percentage.</p>
+      </details>
+      <details>
+        <summary><span data-id>Apakah "suara AI" butuh internet?</span><span data-en>Does the "AI voice" need internet?</span></summary>
+        <p data-id>Tidak. Suara dibuat oleh mesin teks-ke-suara di HP (biasanya Speech Services by Google). Suara lain bisa diunduh sekali lewat pengaturan Android, lalu dipakai offline.</p>
+        <p data-en>No. Speech is produced by the phone's text-to-speech engine (usually Speech Services by Google). Other voices can be downloaded once through Android settings and then work offline.</p>
+      </details>
+      <details>
+        <summary><span data-id>Data apa yang dikumpulkan?</span><span data-en>What data is collected?</span></summary>
+        <p data-id>Tidak ada. ChargeCall tidak punya izin internet; aturan, rekaman, dan riwayat tersimpan di HP dan bisa dicadangkan ke file .zip dari menu Pengaturan.</p>
+        <p data-en>None. ChargeCall has no internet permission; rules, recordings and history stay on the phone and can be backed up to a .zip from Settings.</p>
+      </details>
+      <details>
+        <summary><span data-id>Kenapa tidak ada di Play Store?</span><span data-en>Why isn't it on the Play Store?</span></summary>
+        <p data-id>Proyek pribadi yang dibagikan langsung di sini. Setiap rilis ditandatangani dengan kunci yang sama dan disertai SHA-256, jadi pembaruan tinggal dipasang di atas versi lama.</p>
+        <p data-en>A personal project distributed here. Every release is signed with the same key and comes with its SHA-256, so updates install over the previous version.</p>
+      </details>
+    </details>
+    <details class="group">
+      <summary><span data-id>Penggunaan</span><span data-en>Using it</span><span class="count">· 4</span></summary>
+      <details>
+        <summary><span data-id>Kenapa peringatan tidak bunyi padahal kondisinya tercapai?</span><span data-en>Why didn't an alert sound although the condition was met?</span></summary>
+        <p data-id>Periksa opsi aturan: "Diam saat HP sedang dipakai" hanya menampilkan notifikasi bila layar menyala dan tidak terkunci. Cek juga jam tenang, Diamkan 1 jam, profil aktif, dan kondisi jam/hari/charger pada aturan itu. Notifikasinya selalu menyebut alasan diamnya.</p>
+        <p data-en>Check the rule's options: "Stay silent while the phone is in use" only shows a notification while the screen is on and unlocked. Also check quiet hours, Mute 1 hour, the active profile, and the rule's hour/day/charger conditions. The notification always states why it stayed silent.</p>
+      </details>
+      <details>
+        <summary><span data-id>Seberapa akurat kesehatan baterai?</span><span data-en>How accurate is battery health?</span></summary>
+        <p data-id>Dengan Shizuku, ChargeCall membaca kapasitas penuh yang dipelajari Android dari pengisian nyata; ini angka yang sama yang dipakai sistem. Tanpa Shizuku, angkanya perkiraan dari pengisian terakhir di atas 95% dan bisa meleset beberapa persen. Kapasitas desain diambil dari ROM dan bisa diubah sendiri.</p>
+        <p data-en>With Shizuku, ChargeCall reads the full capacity Android learned from real charges; it is the same figure the system uses. Without Shizuku it is an estimate from the last charge above 95% and may be off by a few percent. Design capacity comes from the ROM and can be edited.</p>
+      </details>
+      <details>
+        <summary><span data-id>Kenapa siklus pengisian tidak tersedia?</span><span data-en>Why are charge cycles unavailable?</span></summary>
+        <p data-id>Angka siklus hanya tersedia bila ROM menyediakannya untuk aplikasi (Android 14+ pada banyak HP Xiaomi). File sistem yang berisi angka itu tidak bisa dibaca tanpa root, bahkan lewat Shizuku.</p>
+        <p data-en>Cycle count is only available when the ROM exposes it to apps (Android 14+ on many Xiaomi phones). The system files that hold it can't be read without root, even through Shizuku.</p>
+      </details>
+      <details>
+        <summary><span data-id>Bagaimana cara menambah widget dan tile?</span><span data-en>How do I add the widget and tiles?</span></summary>
+        <p data-id>Widget: tahan area kosong di layar utama → Widget → ChargeCall. Tile: tarik panel notifikasi, ketuk ikon edit, lalu seret "Battery monitor" dan "Mute ChargeCall" ke atas.</p>
+        <p data-en>Widget: long-press an empty spot on the home screen → Widgets → ChargeCall. Tiles: pull down the notification shade, tap the edit icon, then drag "Battery monitor" and "Mute ChargeCall" up.</p>
+      </details>
+    </details>
+    <details class="group">
+      <summary><span data-id>Masalah</span><span data-en>Troubleshooting</span><span class="count">· 3</span></summary>
+      <details>
+        <summary><span data-id>Peringatan berhenti setelah beberapa jam / setelah restart</span><span data-en>Alerts stop after a few hours / after a restart</span></summary>
+        <p data-id>HyperOS mematikan aplikasi latar yang tidak diizinkan. Buka Setup dan selesaikan Autostart dan Penghemat baterai "Tanpa batasan". Notifikasi kecil "Baterai …%" menandakan pemantauan berjalan.</p>
+        <p data-en>HyperOS kills background apps it hasn't been told to keep. Open Setup and finish Autostart and Battery saver "No restrictions". The small "Battery …%" notification shows monitoring is running.</p>
+      </details>
+      <details>
+        <summary><span data-id>Suara AI bicara dalam bahasa lain</span><span data-en>The AI voice speaks another language</span></summary>
+        <p data-id>Suara bawaan mengikuti bahasa HP. Pilih suara lain di Pengaturan → Suara AI → Pilih, atau unduh suara untuk bahasamu lewat "Unduh suara lain".</p>
+        <p data-en>The default voice follows the phone's language. Pick another voice in Settings → AI voice → Choose, or download a voice for your language with "Download voices".</p>
+      </details>
+      <details>
+        <summary><span data-id>Update dari versi lama</span><span data-en>Updating from an older version</span></summary>
+        <p data-id>Pasang APK baru di atas yang lama; aturan, rekaman, dan pengaturan tetap.</p>
+        <p data-en>Install the new APK over the old one; rules, recordings and settings are kept.</p>
+      </details>
+    </details>
+    <div class="note">
+      <span data-id>Proyek pribadi, tanpa garansi. Tidak berafiliasi dengan Xiaomi, Google, maupun Shizuku/RikkaApps.</span>
+      <span data-en>Personal project, no warranty. Not affiliated with Xiaomi, Google or Shizuku/RikkaApps.</span>
+    </div>
+    <div class="contact">
+      <p data-id><b>Saran, masukan, atau laporan masalah?</b><br>Kirim email — sertakan versi ChargeCall, tipe HP, dan apa yang terjadi.</p>
+      <p data-en><b>Suggestions, feedback or a bug?</b><br>Send an email — include the ChargeCall version, your phone and what happened.</p>
+      <a class="mail" href="mailto:masterz1030@gmail.com?subject=ChargeCall">masterz1030@gmail.com</a>
+    </div>
+  </section>
+
+  <footer>
+    ChargeCall 1.6.1 · © 2026 OverNightCoder · <a href="https://github.com/Sammy219/chargecall-app/releases">Releases</a> · <a href="https://saweria.co/HelloWorld009" target="_blank" rel="noopener">Saweria</a> · <a href="mailto:masterz1030@gmail.com?subject=ChargeCall">masterz1030@gmail.com</a>
+  </footer>
+</div>
+<div class="viewer" hidden><img alt=""></div>
+<button type="button" class="to-top" aria-label="Back to top" title="Back to top">↑</button>
+<script>
+  (function () {
+    var top = document.querySelector('.to-top');
+    function onScroll() { top.classList.toggle('show', window.scrollY > 700); }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    top.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  })();
+  (function () {
+    var viewer = document.querySelector('.viewer'), img = viewer.querySelector('img');
+    document.querySelectorAll('[data-view]').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        img.src = el.getAttribute('href') || el.getAttribute('src');
+        img.alt = (el.querySelector('img') || el).alt || '';
+        viewer.hidden = false;
+      });
+    });
+    function close() { viewer.hidden = true; img.removeAttribute('src'); }
+    viewer.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  })();
+  (function () {
+    var root = document.documentElement;
+    function apply(lang) {
+      root.lang = lang;
+      document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-set-lang') === lang));
+      });
+      try { localStorage.setItem('chargecall-lang', lang); } catch (e) { /* storage unavailable */ }
+    }
+    var saved = null;
+    try { saved = localStorage.getItem('chargecall-lang'); } catch (e) { /* storage unavailable */ }
+    apply(saved || (navigator.language && navigator.language.toLowerCase().indexOf('id') === 0 ? 'id' : 'en'));
+    document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.getAttribute('data-set-lang')); });
+    });
+  })();
+</script>
+</body>
+</html>
