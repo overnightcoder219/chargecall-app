@@ -45,6 +45,7 @@
     .btn.ghost:hover { border-color: var(--accent); }
     .meta { color: var(--muted); font-size: 13px; margin-top: 14px; word-break: break-all; }
     .meta code { color: var(--text); }
+    .meta .dl .n { color: var(--text); font-weight: 700; }
     /* tangkapan layar HP: potret, tiga berdampingan */
     .strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 28px; }
     .strip a { display: block; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(0,0,0,.45); background: var(--surface); }
@@ -131,7 +132,7 @@
         <span data-id>Cara setup</span><span data-en>How to set up</span>
       </a>
     </div>
-    <div class="meta">Android 10+ · <span data-id>tanpa izin internet</span><span data-en>no internet permission</span> · SHA-256 <code>39e365815c886c61d02ed9a816daf3e3527e687136e31bc906315089a2754220</code></div>
+    <div class="meta"><span class="dl" data-dl="Sammy219/chargecall-app" hidden><b class="n"></b> <span data-id>unduhan</span><span data-en>downloads</span> · </span>Android 10+ · <span data-id>tanpa izin internet</span><span data-en>no internet permission</span> · SHA-256 <code>39e365815c886c61d02ed9a816daf3e3527e687136e31bc906315089a2754220</code></div>
     <div class="strip">
       <a href="screenshots/beranda.jpg" data-view><img src="screenshots/beranda.jpg" width="720" height="1600" alt="Beranda: level baterai, kesehatan baterai, aturan"></a>
       <a href="screenshots/otomasi.jpg" data-view><img src="screenshots/otomasi.jpg" width="720" height="1600" alt="Otomasi: profil dan daftar aturan"></a>
@@ -320,6 +321,21 @@
 <div class="viewer" hidden><img alt=""></div>
 <button type="button" class="to-top" aria-label="Back to top" title="Back to top">↑</button>
 <script>
+  (function () {
+    // Jumlah unduhan APK dari rilis GitHub (API publik, dibaca oleh browser pengunjung). Gagal/limit -> lencana tetap tersembunyi.
+    document.querySelectorAll('[data-dl]').forEach(function (el) {
+      fetch('https://api.github.com/repos/' + el.getAttribute('data-dl') + '/releases?per_page=100', { headers: { Accept: 'application/vnd.github+json' } })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (rels) {
+          var n = 0;
+          rels.forEach(function (r) { (r.assets || []).forEach(function (a) { if (/\.apk$/i.test(a.name)) n += a.download_count || 0; }); });
+          if (n <= 0) return;
+          el.querySelector('.n').textContent = n.toLocaleString();
+          el.hidden = false;
+        })
+        .catch(function () { /* offline atau limit API: biarkan tersembunyi */ });
+    });
+  })();
   (function () {
     var top = document.querySelector('.to-top');
     function onScroll() { top.classList.toggle('show', window.scrollY > 700); }
