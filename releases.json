@@ -1,13 +1,24 @@
 {
   "releases": [
     {
+      "tag_name": "v1.7.1",
+      "published_at": "2026-11-09T19:12:00Z",
+      "body": "## ChargeCall 1.7.1\n\n**New**\n- Settings now opens with an \"About & updates\" card: the installed version, a \"Check for updates\" button, the result of the last check (up to date / new version available / failed) and the automatic-check switch.\n\n**Tested on a phone (POCO X5, HyperOS)**\n- The 1.7.0 updater: update offer on open, download with progress notification, automatic resume after a dropped connection, Continue after a server error, checksum mismatch rejected, Cancel and closing from Recents stop the download, then the Android installer updates the app.\n\nUpdating from 1.7.0: open ChargeCall and tap Update in the popup (or Settings → Check for updates). Android may ask once to allow installs from ChargeCall, and Google Play Protect may ask to confirm.\n",
+      "assets": [
+        {
+          "name": "ChargeCall-1.7.1.apk",
+          "download_count": 0
+        }
+      ]
+    },
+    {
       "tag_name": "v1.7.0",
       "published_at": "2026-11-09T18:36:04Z",
       "body": "## ChargeCall 1.7.0\n\n**New**\n- In-app updates: when opened, ChargeCall checks for a new version and offers to install it. The APK is downloaded from the GitHub releases page with progress in a notification, continues where it stopped if the connection drops, is checked against its SHA-256 and opened in the Android installer. Settings has a switch for the automatic check and a \"Check now\" button.\n- Animated splash screen (Android 12+).\n\n**Fixes**\n- Restoring a backup on the same phone no longer deletes the voice recordings it just restored.\n- Rotating or resizing the rule editor no longer throws away unsaved edits and a new recording.\n- After a backup import, monitoring immediately uses the imported rules.\n- Tapping \"Stop sound\" on an old alert no longer turns monitoring back on after it was switched off.\n- The Quick Settings tile opens the app instead of crashing when Android refuses to start monitoring from the panel.\n- An alert whose voice the speech engine refuses no longer keeps other apps' audio lowered.\n- Backup import is safer: size limits, recordings only replaced after the backup is valid, rule values limited to valid ranges.\n- Deleting a rule also deletes its recording.\n\nNote: this version adds the internet permission, used only for the update check and download. There are still no ads and no tracking.\nUsers of 1.6.1 install 1.7.0 by hand once; later updates are offered in the app.\n",
       "assets": [
         {
           "name": "ChargeCall-1.7.0.apk",
-          "download_count": 0
+          "download_count": 4
         }
       ]
     },
@@ -18,7 +29,7 @@
       "assets": [
         {
           "name": "ChargeCall-1.6.1.apk",
-          "download_count": 14
+          "download_count": 16
         }
       ]
     }
