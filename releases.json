@@ -1,0 +1,26 @@
+{
+  "releases": [
+    {
+      "tag_name": "v1.7.0",
+      "published_at": "2026-11-09T18:36:04Z",
+      "body": "## ChargeCall 1.7.0\n\n**New**\n- In-app updates: when opened, ChargeCall checks for a new version and offers to install it. The APK is downloaded from the GitHub releases page with progress in a notification, continues where it stopped if the connection drops, is checked against its SHA-256 and opened in the Android installer. Settings has a switch for the automatic check and a \"Check now\" button.\n- Animated splash screen (Android 12+).\n\n**Fixes**\n- Restoring a backup on the same phone no longer deletes the voice recordings it just restored.\n- Rotating or resizing the rule editor no longer throws away unsaved edits and a new recording.\n- After a backup import, monitoring immediately uses the imported rules.\n- Tapping \"Stop sound\" on an old alert no longer turns monitoring back on after it was switched off.\n- The Quick Settings tile opens the app instead of crashing when Android refuses to start monitoring from the panel.\n- An alert whose voice the speech engine refuses no longer keeps other apps' audio lowered.\n- Backup import is safer: size limits, recordings only replaced after the backup is valid, rule values limited to valid ranges.\n- Deleting a rule also deletes its recording.\n\nNote: this version adds the internet permission, used only for the update check and download. There are still no ads and no tracking.\nUsers of 1.6.1 install 1.7.0 by hand once; later updates are offered in the app.\n",
+      "assets": [
+        {
+          "name": "ChargeCall-1.7.0.apk",
+          "download_count": 0
+        }
+      ]
+    },
+    {
+      "tag_name": "v1.6.1",
+      "published_at": "2026-11-08T17:43:49Z",
+      "body": "## ChargeCall 1.6.1\n\nFirst public release of ChargeCall — talking battery alerts, without ads.\n\n**Alerts as automations**\n- Rules: battery drops to X%, reaches X% while charging, full, charger connected/disconnected, temperature, slow charging, temperature rising fast, battery not increasing, plugged in at 100% too long (overnight charging), battery health below X%, charge cycles reach X.\n- Sounds: AI voice (device text-to-speech, with phrases that use {level}, {temp}, {status}, {time}, {time_left}, {health}), your own recording, an audio file, a ringtone, or vibrate only. Volume, pitch, speech rate, repeat count, loop for N seconds, repeat every N minutes.\n- Extra conditions per rule: hours, days of the week, charger type (AC/USB/wireless), profile. Profiles (Home, Work, Sleep, …) switch sets of rules with one tap.\n- Stays silent while the phone is in use (optional per rule), quiet hours, Mute for 1 hour, and a Stop sound button in the notification.\n\n**Battery**\n- Battery health: current full capacity vs design capacity, charge cycles, status, voltage. With Shizuku it uses the capacity Android learned; without it, an estimate from the charge counter.\n- Time estimates: \"Full in …\" while charging, \"About … left\" on battery.\n- History: battery level chart (24 h / 7 days), charging sessions, battery health trend.\n\n**Convenience**\n- Home-screen widget with level, status, estimate, health and a Mute button; Quick Settings tiles \"Battery monitor\" and \"Mute ChargeCall\".\n- Backup & restore of rules, profiles, settings and recordings to a .zip file.\n- Setup guide that checks notification permission, battery optimisation, Xiaomi Autostart and battery saver, alarm volume and the text-to-speech voice.\n- Follows the device language (English, Indonesian). Light on memory: the background service uses about 12 MB.\n\nRequires Android 10+. No internet permission. Shizuku is optional (battery health only).\n",
+      "assets": [
+        {
+          "name": "ChargeCall-1.6.1.apk",
+          "download_count": 14
+        }
+      ]
+    }
+  ]
+}
