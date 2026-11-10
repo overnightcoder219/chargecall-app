@@ -1,7 +1,7 @@
 {
-  "versionName": "1.7.2",
-  "versionCode": 21,
-  "apk": "https://github.com/overnightcoder219/chargecall-app/releases/download/v1.7.2/ChargeCall-1.7.2.apk",
-  "sha256": "4b9ae93f255dc51b1b211d641209806e90c50bafddac2de2380e5e27e07f0428",
-  "notes": "Fixed\n• The splash screen no longer flickers on Android 16 (the logo stayed over the app for a moment, then vanished) and no longer dims on HyperOS Android 14. The logo animation now starts from the full logo: the battery drains and refills, the bolt pops, the sound waves light up.\n\nTested on\n• Xiaomi Pad 8 Pro (HyperOS, Android 16) and POCO X5 (HyperOS, Android 14), recorded frame by frame."
+  "versionName": "1.7.3",
+  "versionCode": 22,
+  "apk": "https://github.com/overnightcoder219/chargecall-app/releases/download/v1.7.3/ChargeCall-1.7.3.apk",
+  "sha256": "3870d31f3378e74a24d4f77acca3a612e62c49e22e4dcd5d4be7f8d75a63483a",
+  "notes": "Lighter while charging\n• Less work on every battery change: unchanged battery broadcasts are skipped early, battery health is sampled less often, and the charge history is saved in batches instead of on every change. On the Xiaomi Pad 8 Pro the CPU time per level change dropped from 9.2 to 4.2 ms.\n• The voice is set once and the alert sound player is reused instead of being recreated for every alert.\n• The notification and the widget are only redrawn when something they show actually changes.\n• When Android is low on memory, ChargeCall now releases the speech engine and cached rules while idle.\n\nFixed\n• The app screen no longer stays in memory after you close it. The voice check on the Setup page kept a link to the whole screen, so every time the app was opened and closed one more copy stayed in memory. After opening and closing the app three times, memory use dropped from 87 to 54 MB.\n\nTested on\n• Xiaomi Pad 8 Pro (HyperOS, Android 16) and POCO X5 (HyperOS, Android 14)."
 }
