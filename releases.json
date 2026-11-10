@@ -1,13 +1,24 @@
 {
   "releases": [
     {
+      "tag_name": "v1.7.2",
+      "published_at": "2026-11-10T07:06:11Z",
+      "body": "## ChargeCall 1.7.2\n\n**Fixed**\n- The splash screen no longer flickers on Android 16 (the logo stayed over the app for a moment, then vanished) and no longer dims on HyperOS Android 14. The logo animation now starts from the full logo: the battery drains and refills, the bolt pops, the sound waves light up.\n\n**Tested on**\n- Xiaomi Pad 8 Pro (HyperOS, Android 16) and POCO X5 (HyperOS, Android 14), recorded frame by frame.\n",
+      "assets": [
+        {
+          "name": "ChargeCall-1.7.2.apk",
+          "download_count": 0
+        }
+      ]
+    },
+    {
       "tag_name": "v1.7.1",
       "published_at": "2026-11-09T19:12:00Z",
       "body": "## ChargeCall 1.7.1\n\n**New**\n- Settings now opens with an \"About & updates\" card: the installed version, a \"Check for updates\" button, the result of the last check (up to date / new version available / failed) and the automatic-check switch.\n\n**Tested on a phone (POCO X5, HyperOS)**\n- The 1.7.0 updater: update offer on open, download with progress notification, automatic resume after a dropped connection, Continue after a server error, checksum mismatch rejected, Cancel and closing from Recents stop the download, then the Android installer updates the app.\n\nUpdating from 1.7.0: open ChargeCall and tap Update in the popup (or Settings → Check for updates). Android may ask once to allow installs from ChargeCall, and Google Play Protect may ask to confirm.\n",
       "assets": [
         {
           "name": "ChargeCall-1.7.1.apk",
-          "download_count": 5
+          "download_count": 7
         }
       ]
     },
@@ -25,7 +36,7 @@
     {
       "tag_name": "v1.6.1",
       "published_at": "2026-11-08T17:43:49Z",
-      "body": "## ChargeCall 1.6.1\n\nFirst public release of ChargeCall — talking battery alerts, without ads.\n\n**Alerts as automations**\n- Rules: battery drops to X%, reaches X% while charging, full, charger connected/disconnected, temperature, slow charging, temperature rising fast, battery not increasing, plugged in at 100% too long (overnight charging), battery health below X%, charge cycles reach X.\n- Sounds: AI voice (device text-to-speech, with phrases that use {level}, {temp}, {status}, {time}, {time_left}, {health}), your own recording, an audio file, a ringtone, or vibrate only. Volume, pitch, speech rate, repeat count, loop for N seconds, repeat every N minutes.\n- Extra conditions per rule: hours, days of the week, charger type (AC/USB/wireless), profile. Profiles (Home, Work, Sleep, …) switch sets of rules with one tap.\n- Stays silent while the phone is in use (optional per rule), quiet hours, Mute for 1 hour, and a Stop sound button in the notification.\n\n**Battery**\n- Battery health: current full capacity vs design capacity, charge cycles, status, voltage. With Shizuku it uses the capacity Android learned; without it, an estimate from the charge counter.\n- Time estimates: \"Full in …\" while charging, \"About … left\" on battery.\n- History: battery level chart (24 h / 7 days), charging sessions, battery health trend.\n\n**Convenience**\n- Home-screen widget with level, status, estimate, health and a Mute button; Quick Settings tiles \"Battery monitor\" and \"Mute ChargeCall\".\n- Backup & restore of rules, profiles, settings and recordings to a .zip file.\n- Setup guide that checks notification permission, battery optimisation, Xiaomi Autostart and battery saver, alarm volume and the text-to-speech voice.\n- Follows the device language (English, Indonesian). Light on memory: the background service uses about 12 MB.\n\nRequires Android 10+. No internet permission. Shizuku is optional (battery health only).\n",
+      "body": "",
       "assets": [
         {
           "name": "ChargeCall-1.6.1.apk",
