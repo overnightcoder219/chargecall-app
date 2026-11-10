@@ -1,7 +1,7 @@
 {
-  "versionName": "1.7.1",
-  "versionCode": 20,
-  "apk": "https://github.com/overnightcoder219/chargecall-app/releases/download/v1.7.1/ChargeCall-1.7.1.apk",
-  "sha256": "2e7c72e459567729910c9d28b3713049f0531b9bf6fcc7528f3ad5673354dd7b",
-  "notes": "New\n• Settings now opens with an \"About & updates\" card: the installed version, a \"Check for updates\" button, the result of the last check (up to date / new version available / failed) and the automatic-check switch.\n\nTested on a phone (POCO X5, HyperOS)\n• The 1.7.0 updater: update offer on open, download with progress notification, automatic resume after a dropped connection, Continue after a server error, checksum mismatch rejected, Cancel and closing from Recents stop the download, then the Android installer updates the app.\n\nUpdating from 1.7.0: open ChargeCall and tap Update in the popup (or Settings → Check for updates). Android may ask once to allow installs from ChargeCall, and Google Play Protect may ask to confirm."
+  "versionName": "1.7.2",
+  "versionCode": 21,
+  "apk": "https://github.com/overnightcoder219/chargecall-app/releases/download/v1.7.2/ChargeCall-1.7.2.apk",
+  "sha256": "4b9ae93f255dc51b1b211d641209806e90c50bafddac2de2380e5e27e07f0428",
+  "notes": "Fixed\n• The splash screen no longer flickers on Android 16 (the logo stayed over the app for a moment, then vanished) and no longer dims on HyperOS Android 14. The logo animation now starts from the full logo: the battery drains and refills, the bolt pops, the sound waves light up.\n\nTested on\n• Xiaomi Pad 8 Pro (HyperOS, Android 16) and POCO X5 (HyperOS, Android 14), recorded frame by frame."
 }
